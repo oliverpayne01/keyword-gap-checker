@@ -4,6 +4,12 @@ import pandas as pd
 from pathlib import Path
 import json
 
+def main():
+    print("main")
+
+if __name__ == "__main__":
+    main()
+
 # give the option to write path or choose default
 
 target_keywords_df = None
