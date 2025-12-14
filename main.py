@@ -4,6 +4,8 @@ import pandas as pd
 from pathlib import Path
 import json
 
+# def set_config(key, value):
+
 
 def get_config():
     config_path = "./config.json"
@@ -16,17 +18,32 @@ def get_config():
 
 config = get_config()
 
-# function to save
-# function to allow save
+
+def allow_save(key, value):
+    # display a Y / N save input
+    allow_save_input = Path(
+        input("Save selected target keywords path as default? (Y / N): ").lower()
+    )
 
 
 def get_target_keywords():
-    # If we have a saved path, use that, otherwise input path and give option to save
+    if config == None or not config["target_keywords_path"]:
+        target_keywords_path = Path(
+            input("Enter the path to target keywords (must be a .csv): ")
+        )
+        while not os.path.exists(target_keywords_path):
+            print(target_keywords_path)
+            target_keywords_path = Path(
+                input("Enter the path to target keywords (must be a .csv): ")
+            )
 
-    if config["target_keywords_path"]:
-        
-    else:
-        target_keywords_path = Path(input("Enter the path to target keywords (must be a .csv): "))
+            if os.path.exists(target_keywords_path):
+                if target_keywords_path.suffix == ".csv":
+                    allow_save("target_keywords_path", target_keywords_path)
+                else:
+                    print(f"File must be a csv ({target_keywords_path.suffix})")
+            else:
+                print(f"Path does not exist: {target_keywords_path}")
 
 
 # def analyze_gap(target_keywords_df, benchmark_keywords_df):
