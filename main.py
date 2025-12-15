@@ -55,38 +55,38 @@ def allow_save(key, value):
             save_config_file()
 
 
-def get_target_keywords():
+def get_keywords_df(keyword_list):
     try:
-        return pd.read_csv(config["target_keywords_path"])
+        return pd.read_csv(config[f"{keyword_list}_keywords_path"])
 
     except (KeyError, TypeError):
-        target_keywords_path = None
+        keywords_path = None
 
         def handle_input():
-            nonlocal target_keywords_path
-            target_keywords_path = Path(
-                input("Enter the path to target keywords (must be a .csv): ")
+            nonlocal keywords_path
+            keywords_path = Path(
+                input(f"Enter the path to {keyword_list} keywords (must be a .csv): ")
             )
 
             validate_path()
 
         def validate_path():
-            print(target_keywords_path)
+            print(keywords_path)
 
-            if os.path.exists(target_keywords_path):
-                if target_keywords_path.suffix == ".csv":
-                    allow_save("target_keywords_path", str(target_keywords_path))
+            if os.path.exists(keywords_path):
+                if keywords_path.suffix == ".csv":
+                    allow_save(f"{keyword_list}_keywords_path", str(keywords_path))
                     return
                 else:
-                    print(f"File must be a csv ({target_keywords_path.suffix})")
+                    print(f"File must be a csv ({keywords_path.suffix})")
             else:
-                print(f"Path does not exist: {target_keywords_path}")
+                print(f"Path does not exist: {keywords_path}")
 
             handle_input()
 
         handle_input()
 
-        return pd.read_csv(target_keywords_path)
+        return pd.read_csv(keywords_path)
 
 
 # def analyze_gap(target_keywords_df, benchmark_keywords_df):
@@ -95,9 +95,9 @@ def get_target_keywords():
 
 
 def main():
-    target_keywords_df = get_target_keywords()
-    print(target_keywords_df.head())
-    #
+    target_keywords_df = get_keywords_df("target")
+    benchmark_keyword_df = get_keywords_df("benchmark")
+    print(benchmark_keyword_df.head())
     # analyze_gap(get_target_keywords())
 
 
