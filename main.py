@@ -5,17 +5,19 @@ from pathlib import Path
 import json
 
 
-def create_config():
-    print("called create config")
+def create_config(data):
     with open("config.json", "w") as json_file:
         json.dump({}, json_file)
+
+
+# save config
 
 
 def set_config(key, value):
     None
 
 
-def get_config():
+def load_config():
     config_path = "./config.json"
     if os.path.exists(config_path):
         with open(config_path, "r") as json_file:
@@ -24,47 +26,49 @@ def get_config():
         return None
 
 
-config = get_config()
-print(f"Config status: {config}")
+config = load_config()
+# print(f"Config status: {config}")
 
 
 def allow_save(key, value):
-    allow_save_input = Path(
-        input("Save selected target keywords path as default? (Y / N): ").upper()
-    )
+    allow_save_input = input(
+        "Save selected target keywords path as default? (Y / N): "
+    ).upper()
+
     if allow_save_input == "Y":
-        print(f"User input: {allow_save_input}")
         if config == None:
             create_config()
         set_config(key, value)
 
 
 def get_target_keywords():
-    if config == None or not config["target_keywords_path"]:
-        target_keywords_input = input(
-            "Enter the path to target keywords (must be a .csv): "
-        )
-        target_keywords_path = Path(target_keywords_input)
 
-        def validate_file():
+    if config == None or not config["target_keywords_path"]:
+        target_keywords_path = None
+
+        def handle_input():
+            nonlocal target_keywords_path
+            target_keywords_path = Path(
+                input("Enter the path to target keywords (must be a .csv): ")
+            )
+
+            validate_path()
+
+        def validate_path():
             print(target_keywords_path)
 
             if os.path.exists(target_keywords_path):
                 if target_keywords_path.suffix == ".csv":
                     allow_save("target_keywords_path", target_keywords_path)
+                    return
                 else:
                     print(f"File must be a csv ({target_keywords_path.suffix})")
             else:
                 print(f"Path does not exist: {target_keywords_path}")
 
-        validate_file()
+            handle_input()
 
-        while (
-            not os.path.exists(target_keywords_path)
-            or target_keywords_path.suffix != ".csv"
-        ):
-            target_keywords_path = Path(target_keywords_input)
-            validate_file()
+        handle_input()
 
 
 # def analyze_gap(target_keywords_df, benchmark_keywords_df):
