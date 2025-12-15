@@ -58,7 +58,6 @@ def allow_save(key, value):
 def get_keywords_df(keyword_list):
     try:
         return pd.read_csv(config[f"{keyword_list}_keywords_path"])
-
     except (KeyError, TypeError):
         keywords_path = None
 
@@ -89,16 +88,15 @@ def get_keywords_df(keyword_list):
         return pd.read_csv(keywords_path)
 
 
-# def analyze_gap(target_keywords_df, benchmark_keywords_df):
-#     # logic
-#     return
+def analyze_gap(target_keywords_df, benchmark_keywords_df):
+    common_rows = target_keywords_df[
+        target_keywords_df["Keyword"].isin(benchmark_keywords_df["Keyword"])
+    ]
+    print(len(common_rows))
 
 
 def main():
-    target_keywords_df = get_keywords_df("target")
-    benchmark_keyword_df = get_keywords_df("benchmark")
-    print(benchmark_keyword_df.head())
-    # analyze_gap(get_target_keywords())
+    analyze_gap(get_keywords_df("target"), get_keywords_df("benchmark"))
 
 
 if __name__ == "__main__":
